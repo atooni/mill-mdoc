@@ -85,9 +85,6 @@ object core extends Cross[Core](millPlatforms.map(_._1): _*)
 class Core(override val millPlatform: String) extends MillMDocModule with ScoverageModule {
   override def millSourcePath: Path = super.millSourcePath / os.up
   override def artifactName = "de.wayofquality.blended.mill.mdoc"
-  override def ivyDeps = super.ivyDeps() ++ Agg(
-    deps.slf4j
-  )
   override def compileIvyDeps = Agg(
     deps.millMain,
     deps.millScalalib
@@ -100,7 +97,7 @@ class Core(override val millPlatform: String) extends MillMDocModule with Scover
          |package de.wayofquality.mill.mdoc.internal
          |
          |object BuildInfo {
-         |  def millOsgiVerison = "${publishVersion()}"
+         |  def millMdocVerison = "${publishVersion()}"
          |  def millVersion = "${deps.millVersion}"
          |}
          |""".stripMargin
