@@ -1,5 +1,10 @@
 package de.wayofquality.mill.mdoc
 
+import mill._
+import mill.scalalib._
+import mill.modules.Jvm
+import os.Path
+
 trait MDocModule extends ScalaModule {
 
   def scalaMdocVersion : T[String] = T("2.2.24")

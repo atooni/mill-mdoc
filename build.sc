@@ -50,11 +50,11 @@ object Deps_0_10 extends Deps {
   override val millTestVersions = Seq(millVersion)
 }
 object Deps_0_9 extends Deps {
-  override val millVersion = "0.9.3" // scala-steward:off
+  override val millVersion = "0.9.8" // scala-steward:off
   override def millPlatform = "0.9"
   override val scalaVersion = "2.13.7"
   // keep in sync with .github/workflows/build.yml
-  override val millTestVersions = Seq("0.9.10", "0.9.9", "0.9.8", "0.9.7", "0.9.6", "0.9.5", "0.9.4", millVersion)
+  override val millTestVersions = Seq("0.9.10", "0.9.9", millVersion)
 }
 
 /** Cross build versions */
@@ -73,10 +73,10 @@ trait MillMDocModule extends ScalaModule with PublishModule {
     PomSettings(
       description = "Mill module to execute Scalameta MDoc",
       organization = "de.wayofquality.blended",
-      url = "https://github.com/lefou/mill-osgi",
+      url = "https://github.com/atooni/mill-mdoc",
       licenses = Seq(License.`Apache-2.0`),
-      versionControl = VersionControl.github("lefou", "mill-osgi"),
-      developers = Seq(Developer("lefou", "Tobias Roeser", "https.//github.com/lefou"))
+      versionControl = VersionControl.github("atooni", "mill-mdoc"),
+      developers = Seq(Developer("atooni", "Andreas Gies", "https://github.com/atooni"))
     )
   }
 }
@@ -97,7 +97,7 @@ class Core(override val millPlatform: String) extends MillMDocModule with Scover
     val dest = T.dest
     val infoClass =
       s"""// Generated with mill from build.sc
-         |package de.tobiasroeser.mill.osgi.internal
+         |package de.wayofquality.mill.mdoc.internal
          |
          |object BuildInfo {
          |  def millOsgiVerison = "${publishVersion()}"
@@ -129,7 +129,7 @@ class TestSupport(override val millPlatform: String) extends MillMDocModule {
     deps.millMain,
     deps.millScalalib
   )
-  override def artifactName = "mill-osgi-testsupport"
+  override def artifactName = "mill-mdoc-testsupport"
   override def moduleDeps = Seq(core(millPlatform))
 }
 
@@ -146,9 +146,6 @@ class ItestCross(millVersion: String) extends MillIntegrationTestModule {
   def deps = testVersions.toMap.apply(millVersion)
   override def millTestVersion = T { millVersion }
   override def pluginsUnderTest = Seq(core(deps.millPlatform), testsupport(deps.millPlatform))
-  override def prefetchIvyDeps = Agg(
-    ivy"com.typesafe.akka:akka-http-core_2.12:10.1.11"
-  )
 
   override def pluginUnderTestDetails: Task.Sequence[(PathRef, (PathRef, (PathRef, (PathRef, (PathRef, Artifact)))))] =
     T.traverse(pluginsUnderTest) { p =>
