@@ -13,7 +13,7 @@ trait MDocModule extends ScalaModule {
 
   def watchedMDocsDestination: T[Option[Path]] = T(None)
 
-  override def ivyDeps: T[Agg[Dep]] = T {
+  override def ivyDeps = T {
     super.ivyDeps() ++ Agg(scalaMdocDep())
   }
 
