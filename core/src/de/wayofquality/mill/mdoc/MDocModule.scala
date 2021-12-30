@@ -9,12 +9,12 @@ trait MDocModule extends ScalaModule {
 
   def scalaMdocVersion : T[String] = T("2.2.24")
 
-  def scalaMDocDep : T[Dep] = T(ivy"org.scalameta::mdoc:${scalaMdocVersion()}")
+  def scalaMdocDep : T[Dep] = T(ivy"org.scalameta::mdoc:${scalaMdocVersion()}")
 
   def watchedMDocsDestination: T[Option[Path]] = T(None)
 
   override def ivyDeps: T[Agg[Dep]] = T {
-    super.ivyDeps() ++ Agg(scalaMDocDep())
+    super.ivyDeps() ++ Agg(scalaMdocDep())
   }
 
   // where do the mdoc sources live ?
@@ -34,10 +34,12 @@ trait MDocModule extends ScalaModule {
 
   def mdocWatch() = T.command {
 
-    watchedMDocsDestination().foreach{ p =>
-      val cp = runClasspath().map(_.path)
-      val dirParams = mdocSources().map(pr => Seq(s"--in", pr.path.toIO.getAbsolutePath, "--out",  p.toIO.getAbsolutePath)).iterator.flatten.toSeq
-      Jvm.runLocal("mdoc.Main", cp, dirParams ++ Seq("--watch"))
+    watchedMDocsDestination() match {
+      case None => throw new Exception("watchedMDocsDestination is not set, so we dant know where to put compiled md files")
+      case Some(p) =>
+        val cp = runClasspath().map(_.path)
+        val dirParams = mdocSources().map(pr => Seq(s"--in", pr.path.toIO.getAbsolutePath, "--out",  p.toIO.getAbsolutePath)).iterator.flatten.toSeq
+        Jvm.runLocal("mdoc.Main", cp, dirParams ++ Seq("--watch"))
     }
 
   }
