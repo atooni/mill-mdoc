@@ -65,16 +65,13 @@ combination with a static content generator in watch mode.
   import $ivy.`de.wayofquality.blended::de.wayofquality.blended.mill.mdoc::0.0.1-1-fdff74`
   import de.wayofquality.mill.mdoc.MDocModule
 
-  // It's convenient to keep the base project directory around
-  val projectDir = build.millSourcePath
-
   object site extends DocusaurusModule with MDocModule {
     // Set the Scala version (required to invoke the proper compiler)
     override def scalaVersion = T(Deps.scalaVersion)
     // The md inputs live in the "docs" folder of the project 
-    override def mdocSources = T.sources{ projectDir / "docs" }
+    override def mdocSources = T.sources{ T.workspace / "docs" }
     override def docusaurusSources = T.sources(
-      projectDir / "website",
+      T.workspace / "website"
     )
 
     // If we are running docusaurus in watch mode we want to replace compiled 
